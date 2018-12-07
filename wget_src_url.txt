@@ -72,6 +72,15 @@ http://baijiahao.baidu.com/s?id=1567710359169274&wfr=spider&for=pc
 12.jenkins下载war包
 wget http://updates.jenkins-ci.org/download/war/2.126/jenkins.war
 
+13. openshift3.10下载RPM包
+[root@master test]# cat wget_rpms.sh 
+#!/bin/bash
+URL=http://mirrors.aliyun.com/centos/7/paas/x86_64/openshift-origin310
+wget http://mirrors.aliyun.com/centos/7/paas/x86_64/openshift-origin310/  -O index.html
+for Rpm in $(grep rpm index.html | awk -F'"' '{print $2}')
+do 
+    wget ${URL}/${Rpm}
+done
 
 1、linux 安装openssl 
 [root@VM_10_51_centos soft]# cd /opt/soft/build/openssl-1.0.1u
