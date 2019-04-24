@@ -1,3 +1,9 @@
+0. 定时任务
+[root@VM_10_62_centos ~]# crontab -l
+*/1 * * * * /usr/local/qcloud/stargate/admin/start.sh > /dev/null 2>&1 &
+00 00 * * * su - oracle -c "/bin/bash /home/oracle/oracle_bakup.sh expdp"
+
+
 1.shell中数组和字典的用法:
 [root@localhost ~]# cat shell_array_and_dic_method.sh 
 #!/bin/bash
