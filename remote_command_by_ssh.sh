@@ -21,10 +21,10 @@ do
         port="22"  
     fi  
         result=$(/usr/bin/ssh  $user@$ip "$remote_cmd")
-        for port in ${port_array[*]}
+ -        for port in ${port_array[*]}
         do
             
-            res_port=$(/usr/bin/ssh  $user@$ip "/usr/bin/netstat -lnutp | grep ${port} | wc -l")
+            res_port=$(/usr/bin/ssh  $user@$ip "/usr/bin/netstat -lnutp | grep -w '${port}' | wc -l")
             #echo 'ip':${ip},'port':${result}:${port},${res_port}
             echo "{'ip':${result},'port':${port},'count':${res_port}}" >> ${save_file}
 	done
