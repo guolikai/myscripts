@@ -1,0 +1,26 @@
+#This is My Python-3 Docakfile
+#version 1.0
+#Author: Guolikai
+
+#Base images 基础镜像
+FROM centos
+
+#MAINTAINER 维护者信息
+MAINTAINER Guolikai
+
+
+#RUN 在容器里执行的命令前加上RUN
+#WORKDIR 相当于CD，找到当前工作目录
+WORKDIR /tmp
+RUN mkdir -p /App/{backup,conf,mnt,log,src,script,opt,data,build,install}/{OPS,SRT}
+RUN yum -y install wget unzip git gcc xz make zlib-devel openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel  libcurl-devel;yum clean all
+
+RUN wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tar.xz && tar xvf Python-3.6.1.tar.xz  && cd Python-3.6.1 && \
+    ./configure  --with-zlib --enable-shared --enable-loadable-sqlite-extensions &&  make && make install && \
+    rm -rf /tmp/{Python-3.6.1.tar.xz,Python-3.6.1}
+
+RUN mv /usr/bin/python /usr/bin/python2
+RUN ln -s /usr/local/bin/python3 /usr/bin/python && ln -s /usr/local/bin/pip3 /usr/bin/pip
+RUN sed -i 's@/usr/bin/python@/usr/bin/python2@g' /usr/bin/yum
+RUN echo "/usr/local/lib" >> /etc/ld.so.conf && /sbin/ldconfig && /sbin/ldconfig -v
+RUN python -V
