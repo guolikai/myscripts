@@ -1,0 +1,37 @@
+
+
+
+1.python3基础环境制作：
+docker run --name shipman -it centos
+
+mkdir -p /App/{backup,conf,mnt,log,src,script,opt,data,build,install}/{OPS,SRT}
+yum -y install wget unzip git gcc openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel make libcurl-devel
+cd /App/src/OPS 
+wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tgz
+tar xf Python-3.5.2.tgz
+cd  Python-3.5.2
+./configure  --with-zlib --enable-shared --enable-loadable-sqlite-extensions &&  make && make install
+ln -s /usr/local/bin/python3.5 /usr/bin/python3
+echo "/usr/local/lib" >> /etc/ld.so.conf && /sbin/ldconfig && /sbin/ldconfig -v
+
+wget https://pypi.python.org/packages/a9/23/720c7558ba6ad3e0f5ad01e0d6ea2288b486da32f053c73e259f7c392042/setuptools-36.0.1.zip#md5=430eb106788183eefe9f444a300007f0
+unzip setuptools-36.0.1.zip
+cd setuptools-36.0.1
+python  setup.py install
+
+cd /App/src/OPS
+wget https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz#md5=35f01da33009719497f01a4ba69d63c9
+tar xf pip-9.0.1.tar.gz
+cd pip-9.0.1
+python  setup.py install
+
+
+2.shipman docker镜像制作：
+docker run --name shipman2 -it python3-env:v1.0 '/bin/bash'
+pip3 install virtualenv
+virtualenv  -p python3 /shipman-env --no-site-packages
+
+pip3 install pymysql sqlalchemy tornado docker docker-py pycurl
+
+cd /App/src/SRT/
+git clone https://github.com/guolikai/ops.git
