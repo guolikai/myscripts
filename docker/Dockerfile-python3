@@ -39,3 +39,4 @@ mv /var/ftp/pub/node-v10.16.0-linux-64 . //后面的.表示移动到当前目录
 mv node-v10.16.0.0-linux-64/ nodejs
 ln -s /usr/local/nodejs/bin/npm /usr/local/bin/
 ln -s /usr/local/nodejs/bin/node /usr/local/bin/
+https://github.com/wangyouworld/AdminLTE_CN/archive/3.0.5.tar.gz
