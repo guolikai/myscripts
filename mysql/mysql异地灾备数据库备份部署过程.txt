@@ -1,0 +1,654 @@
+[newnew@VM_10_199_centos ~]$ mysql -uroot -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 1467650
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show host,user from mysql.user;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'host,user from mysql.user' at line 1
+mysql> select  host,user from mysql.user;
++----------------+---------------+
+| host           | user          |
++----------------+---------------+
+| %              | newnew_dev    |
+| 119.29.202.202 | newnew_dev    |
+| 127.0.0.1      | backup        |
+| 127.0.0.1      | monitor       |
+| 127.0.0.1      | newnew        |
+| 127.0.0.1      | newnewroot    |
+| 172.20.10.%    | newnew        |
+| 172.20.10.%    | newnewroot    |
+| 172.20.10.%    | repl          |
+| localhost      | backup        |
+| localhost      | monitor       |
+| localhost      | mysql.session |
+| localhost      | mysql.sys     |
+| localhost      | newnew        |
+| localhost      | newnewroot    |
+| localhost      | root          |
++----------------+---------------+
+16 rows in set (0.00 sec)
+
+mysql> GRANT SUPER, REPLICATION SLAVE, RELOAD ON *.* TO 'repl'@'119.29.202.202' IDENTIFIED BY 'repl@123';
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> GRANT SUPER, REPLICATION SLAVE, RELOAD ON *.* TO 'repl'@'154.8.215.231' IDENTIFIED BY 'repl@123';
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> ca
+[1]+  Stopped                 mysql -uroot -p
+[newnew@VM_10_199_centos ~]$ cat /etc/rc.local 
+#!/bin/bash
+
+
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+touch /var/lock/subsys/local
+/usr/local/qcloud/rps/set_rps.sh >/tmp/setRps.log 2>&1
+/usr/local/qcloud/irq/net_smp_affinity.sh >/tmp/net_affinity.log 2>&1
+/usr/local/qcloud/gpu/nv_gpu_conf.sh >/tmp/nv_gpu_conf.log 2>&1
+mount /dev/vdb1 /opt/data/mysql
+/bin/bash /opt/script/mysql/mysql_install.sh start
+su - newnew -c "/bin/bash /opt/script/keepalived_install.sh start"
+
+#----------------------------------------------------------------------------------------------------------------------
+
+
+
+[root@VM_0_13_centos ~]# /opt/script/mysql/mysql_install.sh init
+21000013
+mysql 运行组：mysql 已存在
+mysql 运行用户：mysql 已存在
+mysql 数据存储目录：/opt/data/mysql 已存在
+成功 mysql 授权表
+mysql 已初始化
+[root@VM_0_13_centos ~]# ll /opt/data/mysql/
+total 798748
+-rw-r----- 1 mysql mysql        56 Jul 26 09:19 auto.cnf
+-rw-r----- 1 mysql mysql       406 Jul 26 09:19 ib_buffer_pool
+-rw-r----- 1 mysql mysql  12582912 Jul 26 09:19 ibdata1
+-rw-r----- 1 mysql mysql 268435456 Jul 26 09:19 ib_logfile0
+-rw-r----- 1 mysql mysql 268435456 Jul 26 09:19 ib_logfile1
+-rw-r----- 1 mysql mysql 268435456 Jul 26 09:19 ib_logfile2
+drwxr-x--- 2 mysql mysql      4096 Jul 26 09:19 mysql
+drwxr-x--- 2 mysql mysql      4096 Jul 26 09:19 performance_schema
+drwxr-x--- 2 mysql mysql     12288 Jul 26 09:19 sys
+[root@VM_0_13_centos ~]# /opt/mysql/bin/mysqld_safe --skip-grant-tables &
+[1] 17489
+[root@VM_0_13_centos ~]# 2018-07-26T01:19:37.742937Z mysqld_safe Logging to '/opt/data/logs/error-log/error.log'.
+2018-07-26T01:19:37.765120Z mysqld_safe Starting mysqld daemon with databases from /opt/data/mysql
+
+[root@VM_0_13_centos ~]# mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 2
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> export MYSQL_HOME=/opt/mysql
+    -> export PATH=$MYSQL_HOME/bin:$PATH
+    -> ^C
+mysql> update mysql.user set authentication_string=PASSWORD('ZjHl#@!123.') where User='root';
+Query OK, 1 row affected, 1 warning (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+mysql> 
+[2]+  Stopped                 mysql
+[root@VM_0_13_centos ~]# ls
+[root@VM_0_13_centos ~]# ls
+[root@VM_0_13_centos ~]# cd /opt/script/
+[root@VM_0_13_centos script]# ls
+mysql  mysql_install_script_5.7.21.tar.gz
+[root@VM_0_13_centos script]# cd mysql/
+[root@VM_0_13_centos mysql]# ls
+dbinit_newnew.sql  mysql-5.7.21.cnf  mysql-5.7.21.init  mysql_install.sh
+[root@VM_0_13_centos mysql]# vim dbinit_newnew.sql 
+[root@VM_0_13_centos mysql]# ip a  s
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000
+    link/ether 52:54:00:7c:cc:68 brd ff:ff:ff:ff:ff:ff
+    inet 172.21.0.13/20 brd 172.21.15.255 scope global eth0
+       valid_lft forever preferred_lft forever
+[root@VM_0_13_centos mysql]# vim dbinit_newnew.sql 
+[root@VM_0_13_centos mysql]# ls
+dbinit_newnew.sql  mysql-5.7.21.cnf  mysql-5.7.21.init  mysql_install.sh
+[root@VM_0_13_centos mysql]# mysql
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> source dbinit_newnew.sql;
+Database changed
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> exit
+Bye
+[root@VM_0_13_centos mysql]# kill 17143
+-bash: kill: (17143) - No such process
+[root@VM_0_13_centos mysql]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1029/sshd           
+tcp6       0      0 :::3306                 :::*                    LISTEN      18893/mysqld        
+udp        0      0 172.21.0.13:123         0.0.0.0:*                           1128/ntpd           
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           1128/ntpd           
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           1128/ntpd           
+udp6       0      0 :::123                  :::*                                1128/ntpd           
+[root@VM_0_13_centos mysql]# kill -9 18893
+[root@VM_0_13_centos mysql]# /opt/mysql/bin/mysqld_safe: line 198: 18893 Killed                  nohup /opt/mysql/bin/mysqld --basedir=/opt/mysql --datadir=/opt/data/mysql --plugin-dir=/opt/mysql/lib/plugin --user=mysql --skip-grant-tables --log-error=/opt/data/logs/error-log/error.log --open-files-limit=60000 --pid-file=/opt/mysql/mysql.pid --socket=/tmp/mysql.sock --port=3306 < /dev/null > /dev/null 2>&1
+2018-07-26T01:21:37.473985Z mysqld_safe Number of processes running now: 0
+2018-07-26T01:21:37.476583Z mysqld_safe mysqld restarted
+
+[root@VM_0_13_centos mysql]# 
+[root@VM_0_13_centos mysql]# 
+[root@VM_0_13_centos mysql]# 
+[root@VM_0_13_centos mysql]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1029/sshd           
+tcp6       0      0 :::3306                 :::*                    LISTEN      19056/mysqld        
+udp        0      0 172.21.0.13:123         0.0.0.0:*                           1128/ntpd           
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           1128/ntpd           
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           1128/ntpd           
+udp6       0      0 :::123                  :::*                                1128/ntpd           
+[root@VM_0_13_centos mysql]# !ps
+ps -ef |grep msyql
+root     19102 15657  0 09:21 pts/0    00:00:00 grep --color=auto msyql
+[root@VM_0_13_centos mysql]# ps -ef |grep msyql
+root     19104 15657  0 09:21 pts/0    00:00:00 grep --color=auto msyql
+[root@VM_0_13_centos mysql]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1029/sshd           
+tcp6       0      0 :::3306                 :::*                    LISTEN      19056/mysqld        
+udp        0      0 172.21.0.13:123         0.0.0.0:*                           1128/ntpd           
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           1128/ntpd           
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           1128/ntpd           
+udp6       0      0 :::123                  :::*                                1128/ntpd           
+[root@VM_0_13_centos mysql]# kill 19056
+[root@VM_0_13_centos mysql]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1029/sshd           
+udp        0      0 172.21.0.13:123         0.0.0.0:*                           1128/ntpd           
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           1128/ntpd           
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           1128/ntpd           
+udp6       0      0 :::123                  :::*                                1128/ntpd           
+[root@VM_0_13_centos mysql]# 2018-07-26T01:22:00.413542Z mysqld_safe mysqld from pid file /opt/mysql/mysql.pid ended
+
+[1]-  Done                    /opt/mysql/bin/mysqld_safe --skip-grant-tables  (wd: ~)
+(wd now: /opt/script/mysql)
+[root@VM_0_13_centos mysql]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1029/sshd           
+udp        0      0 172.21.0.13:123         0.0.0.0:*                           1128/ntpd           
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           1128/ntpd           
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           1128/ntpd           
+udp6       0      0 :::123                  :::*                                1128/ntpd           
+[root@VM_0_13_centos mysql]# free -m
+              total        used        free      shared  buff/cache   available
+Mem:           7822         129         762           0        6930        7384
+Swap:             0           0           0
+[root@VM_0_13_centos mysql]# vim /opt/mysql/conf/my.cnf
+[root@VM_0_13_centos mysql]# ls
+dbinit_newnew.sql  mysql-5.7.21.cnf  mysql-5.7.21.init  mysql_install.sh
+[root@VM_0_13_centos mysql]# vim mysql-5.7.21.cnf 
+[root@VM_0_13_centos mysql]# vim /opt/mysql/conf/my.cnf
+[root@VM_0_13_centos mysql]# ./mysql-5.7.21.init start
+Starting MySQL...
+/bin/sh  /opt/mysql/bin/mysqld_safe  --defaults-file=/opt/mysql/conf/my.cnf --datadir=/opt/data/mysql &
+2018-07-26T01:25:21.568795Z mysqld_safe Logging to '/opt/data/logs/error-log/error.log'.
+2018-07-26T01:25:21.587843Z mysqld_safe Starting mysqld daemon with databases from /opt/data/mysql
+
+MySQL 3306 启动成功
+[root@VM_0_13_centos mysql]# 
+[root@VM_0_13_centos mysql]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1029/sshd           
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      20803/mysqld        
+udp        0      0 172.21.0.13:123         0.0.0.0:*                           1128/ntpd           
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           1128/ntpd           
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           1128/ntpd           
+udp6       0      0 :::123                  :::*                                1128/ntpd           
+[root@VM_0_13_centos mysql]# mysql  -uroot -p
+Enter password: 
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+[root@VM_0_13_centos mysql]# mysql  -uroot -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.21-log
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('ZjHl#@!123.');
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> system ls;
+dbinit_newnew.sql  mysql-5.7.21.cnf  mysql-5.7.21.init	mysql_install.sh
+mysql> source dbinit_newnew.sql;
+Database changed
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.00 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> exit
+Bye
+[root@VM_0_13_centos mysql]# mysql -h 119.29.202.202 -p33306 
+mysql: [Warning] Using a password on the command line interface can be insecure.
+
+^C
+[root@VM_0_13_centos mysql]# mysql -h 119.29.202.202 -P 13306 
+ERROR 1045 (28000): Access denied for user 'monitor'@'154.8.215.231' (using password: YES)
+[root@VM_0_13_centos mysql]# mysql -h 119.29.202.202 -P 13306  ^C
+[root@VM_0_13_centos mysql]# ping 119.29.202.202
+PING 119.29.202.202 (119.29.202.202) 56(84) bytes of data.
+^C
+--- 119.29.202.202 ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss, time 999ms
+
+[root@VM_0_13_centos mysql]# mysql -h 119.29.202.202 -P 13306 -urepl -p'repl@123'
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1045 (28000): Access denied for user 'repl'@'154.8.215.231' (using password: YES)
+[root@VM_0_13_centos mysql]# mysql -h 119.29.202.202 -P 13306 -urepl -p'repl@123'
+mysql: [Warning] Using a password on the command line interface can be insecure.
+\Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 1467730
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show variables like "%id%";
++---------------------------------------+--------------------------------------+
+| Variable_name                         | Value                                |
++---------------------------------------+--------------------------------------+
+| avoid_temporal_upgrade                | OFF                                  |
+| binlog_gtid_simple_recovery           | ON                                   |
+| enforce_gtid_consistency              | ON                                   |
+| gtid_executed_compression_period      | 1000                                 |
+| gtid_mode                             | ON                                   |
+| gtid_next                             | AUTOMATIC                            |
+| gtid_owned                            |                                      |
+| gtid_purged                           |                                      |
+| identity                              | 0                                    |
+| insert_id                             | 0                                    |
+| last_insert_id                        | 0                                    |
+| log_builtin_as_identified_by_password | OFF                                  |
+| log_syslog_include_pid                | ON                                   |
+| pid_file                              | /opt/mysql/mysql.pid                 |
+| pseudo_thread_id                      | 1467730                              |
+| query_cache_wlock_invalidate          | OFF                                  |
+| server_id                             | 20010199                             |
+| server_id_bits                        | 32                                   |
+| server_uuid                           | d383fd39-6a1b-11e8-9588-5254001e4e4c |
+| session_track_gtids                   | OFF                                  |
++---------------------------------------+--------------------------------------+
+20 rows in set (0.05 sec)
+
+mysql> exit
+Bye
+[root@VM_0_13_centos mysql]# mysql -uroot -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 4
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show variables like "%id%";
++---------------------------------------+--------------------------------------+
+| Variable_name                         | Value                                |
++---------------------------------------+--------------------------------------+
+| avoid_temporal_upgrade                | OFF                                  |
+| binlog_gtid_simple_recovery           | ON                                   |
+| enforce_gtid_consistency              | ON                                   |
+| gtid_executed_compression_period      | 1000                                 |
+| gtid_mode                             | ON                                   |
+| gtid_next                             | AUTOMATIC                            |
+| gtid_owned                            |                                      |
+| gtid_purged                           |                                      |
+| identity                              | 0                                    |
+| insert_id                             | 0                                    |
+| last_insert_id                        | 0                                    |
+| log_builtin_as_identified_by_password | OFF                                  |
+| log_syslog_include_pid                | ON                                   |
+| pid_file                              | /opt/mysql/mysql.pid                 |
+| pseudo_thread_id                      | 4                                    |
+| query_cache_wlock_invalidate          | OFF                                  |
+| server_id                             | 21000013                             |
+| server_id_bits                        | 32                                   |
+| server_uuid                           | eb8c4a38-9071-11e8-923a-5254007ccc68 |
+| session_track_gtids                   | OFF                                  |
++---------------------------------------+--------------------------------------+
+20 rows in set (0.01 sec)
+
+mysql> show variables like "%time%";
++---------------------------------+-------------------+
+| Variable_name                   | Value             |
++---------------------------------+-------------------+
+| binlog_max_flush_queue_time     | 0                 |
+| connect_timeout                 | 600               |
+| datetime_format                 | %Y-%m-%d %H:%i:%s |
+| default_password_lifetime       | 0                 |
+| delayed_insert_timeout          | 600               |
+| explicit_defaults_for_timestamp | OFF               |
+| flush_time                      | 0                 |
+| have_statement_timeout          | YES               |
+| innodb_flush_log_at_timeout     | 1                 |
+| innodb_lock_wait_timeout        | 3                 |
+| innodb_old_blocks_time          | 1000              |
+| innodb_rollback_on_timeout      | OFF               |
+| interactive_timeout             | 600               |
+| lc_time_names                   | en_US             |
+| lock_wait_timeout               | 31536000          |
+| log_timestamps                  | UTC               |
+| long_query_time                 | 1.000000          |
+| max_execution_time              | 0                 |
+| net_read_timeout                | 3600              |
+| net_write_timeout               | 3600              |
+| rpl_stop_slave_timeout          | 31536000          |
+| slave_net_timeout               | 60                |
+| slow_launch_time                | 2                 |
+| system_time_zone                | CST               |
+| time_format                     | %H:%i:%s          |
+| time_zone                       | +08:00            |
+| timestamp                       | 1532568911.373641 |
+| wait_timeout                    | 600               |
++---------------------------------+-------------------+
+28 rows in set (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> CHANGE MASTER TO MASTER_HOST='119.29.202.202',MASTER_PORT=13306,MASTER_USER='repl',MASTER_PASSWORD='repl@123',MASTER_AUTO_POSITION = 1;
+Query OK, 0 rows affected, 2 warnings (0.00 sec)
+
+mysql> show slave status;
++----------------+----------------+-------------+-------------+---------------+-----------------+---------------------+----------------+---------------+-----------------------+------------------+-------------------+-----------------+---------------------+--------------------+------------------------+-------------------------+-----------------------------+------------+------------+--------------+---------------------+-----------------+-----------------+----------------+---------------+--------------------+--------------------+--------------------+-----------------+-------------------+----------------+-----------------------+-------------------------------+---------------+---------------+----------------+----------------+-----------------------------+------------------+-------------+-------------------------+-----------+---------------------+-------------------------+--------------------+-------------+-------------------------+--------------------------+----------------+--------------------+--------------------+-------------------------------------------+---------------+----------------------+--------------+--------------------+
+| Slave_IO_State | Master_Host    | Master_User | Master_Port | Connect_Retry | Master_Log_File | Read_Master_Log_Pos | Relay_Log_File | Relay_Log_Pos | Relay_Master_Log_File | Slave_IO_Running | Slave_SQL_Running | Replicate_Do_DB | Replicate_Ignore_DB | Replicate_Do_Table | Replicate_Ignore_Table | Replicate_Wild_Do_Table | Replicate_Wild_Ignore_Table | Last_Errno | Last_Error | Skip_Counter | Exec_Master_Log_Pos | Relay_Log_Space | Until_Condition | Until_Log_File | Until_Log_Pos | Master_SSL_Allowed | Master_SSL_CA_File | Master_SSL_CA_Path | Master_SSL_Cert | Master_SSL_Cipher | Master_SSL_Key | Seconds_Behind_Master | Master_SSL_Verify_Server_Cert | Last_IO_Errno | Last_IO_Error | Last_SQL_Errno | Last_SQL_Error | Replicate_Ignore_Server_Ids | Master_Server_Id | Master_UUID | Master_Info_File        | SQL_Delay | SQL_Remaining_Delay | Slave_SQL_Running_State | Master_Retry_Count | Master_Bind | Last_IO_Error_Timestamp | Last_SQL_Error_Timestamp | Master_SSL_Crl | Master_SSL_Crlpath | Retrieved_Gtid_Set | Executed_Gtid_Set                         | Auto_Position | Replicate_Rewrite_DB | Channel_Name | Master_TLS_Version |
++----------------+----------------+-------------+-------------+---------------+-----------------+---------------------+----------------+---------------+-----------------------+------------------+-------------------+-----------------+---------------------+--------------------+------------------------+-------------------------+-----------------------------+------------+------------+--------------+---------------------+-----------------+-----------------+----------------+---------------+--------------------+--------------------+--------------------+-----------------+-------------------+----------------+-----------------------+-------------------------------+---------------+---------------+----------------+----------------+-----------------------------+------------------+-------------+-------------------------+-----------+---------------------+-------------------------+--------------------+-------------+-------------------------+--------------------------+----------------+--------------------+--------------------+-------------------------------------------+---------------+----------------------+--------------+--------------------+
+|                | 119.29.202.202 | repl        |       13306 |            60 |                 |                   4 | relay.000001   |             4 |                       | No               | No                |                 | mysql               |                    |                        |                         |                             |          0 |            |            0 |                   0 |             154 | None            |                |             0 | No                 |                    |                    |                 |                   |                |                  NULL | No                            |             0 |               |              0 |                |                             |                0 |             | mysql.slave_master_info |         0 |                NULL |                         |              86400 |             |                         |                          |                |                    |                    | eb8c4a38-9071-11e8-923a-5254007ccc68:1-16 |             1 |                      |              |                    |
++----------------+----------------+-------------+-------------+---------------+-----------------+---------------------+----------------+---------------+-----------------------+------------------+-------------------+-----------------+---------------------+--------------------+------------------------+-------------------------+-----------------------------+------------+------------+--------------+---------------------+-----------------+-----------------+----------------+---------------+--------------------+--------------------+--------------------+-----------------+-------------------+----------------+-----------------------+-------------------------------+---------------+---------------+----------------+----------------+-----------------------------+------------------+-------------+-------------------------+-----------+---------------------+-------------------------+--------------------+-------------+-------------------------+--------------------------+----------------+--------------------+--------------------+-------------------------------------------+---------------+----------------------+--------------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> show slave statu\G;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'statu' at line 1
+ERROR: 
+No query specified
+
+mysql> show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: 
+                  Master_Host: 119.29.202.202
+                  Master_User: repl
+                  Master_Port: 13306
+                Connect_Retry: 60
+              Master_Log_File: 
+          Read_Master_Log_Pos: 4
+               Relay_Log_File: relay.000001
+                Relay_Log_Pos: 4
+        Relay_Master_Log_File: 
+             Slave_IO_Running: No
+            Slave_SQL_Running: No
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: mysql
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 0
+              Relay_Log_Space: 154
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: NULL
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 0
+                  Master_UUID: 
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: 
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: eb8c4a38-9071-11e8-923a-5254007ccc68:1-16
+                Auto_Position: 1
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+
+mysql> start slave;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Queueing master event to the relay log
+                  Master_Host: 119.29.202.202
+                  Master_User: repl
+                  Master_Port: 13306
+                Connect_Retry: 60
+              Master_Log_File: bin.000012
+          Read_Master_Log_Pos: 834594
+               Relay_Log_File: relay.000010
+                Relay_Log_Pos: 431814
+        Relay_Master_Log_File: bin.000009
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: mysql
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 431613
+              Relay_Log_Space: 2509609
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 3162769
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 20010199
+                  Master_UUID: d383fd39-6a1b-11e8-9588-5254001e4e4c
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Reading event from the relay log
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 0b1cdfc5-6a18-11e8-8b74-5254007cf6a4:1-1381,
+d383fd39-6a1b-11e8-9588-5254001e4e4c:1-647
+            Executed_Gtid_Set: 0b1cdfc5-6a18-11e8-8b74-5254007cf6a4:1-90:129-131:133:135:137-138,
+d383fd39-6a1b-11e8-9588-5254001e4e4c:1-535,
+eb8c4a38-9071-11e8-923a-5254007ccc68:1-16
+                Auto_Position: 1
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+1 row in set (0.32 sec)
+
+ERROR: 
+No query specified
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| ats                |
+| mq                 |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+7 rows in set (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| ats                |
+| mq                 |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+7 rows in set (0.00 sec)

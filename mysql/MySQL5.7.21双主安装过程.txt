@@ -1,0 +1,398 @@
+Connecting to 119.29.204.83:2222...
+Connection established.
+To escape to local shell, press 'Ctrl+Alt+]'.
+
+WARNING! The remote SSH server rejected X11 forwarding request.
+
+    郭立凯, 欢迎使用Jumpserver开源跳板机系统  
+
+    1) 输入 ID 直接登录 或 输入部分 IP,主机名,备注 进行搜索登录(如果唯一).
+    2) 输入 / + IP, 主机名 or 备注 搜索. 如: /ip
+    3) 输入 p 显示您有权限的主机.
+    4) 输入 g 显示您有权限的节点
+    5) 输入 g + 组ID 显示节点下主机. 如: g1
+    6) 输入 h 帮助.
+    0) 输入 q 退出.
+
+Opt> 
+ID   Hostname        IP               LoginAs  Comment                                                                                                                                     
+1    172.20.10.101   172.20.10.101    [newnew] Redis-master                                                                                                                                
+2    172.20.10.102   172.20.10.102    [newnew] Slave1-sentinel1                                                                                                                            
+3    172.20.10.103   172.20.10.103    [newnew] Slave2-sentinel2                                                                                                                            
+4    172.20.10.111   172.20.10.111    [newnew] 区块链1                                                                                                                                     
+5    172.20.10.112   172.20.10.112    [newnew] 区块链2                                                                                                                                     
+6    172.20.10.113   172.20.10.113    [newnew] 区块链3                                                                                                                                     
+7    172.20.10.114   172.20.10.114    [newnew] 区块链4                                                                                                                                     
+8    172.20.10.198   172.20.10.198    [newnew] Mysql1                                                                                                                                      
+9    172.20.10.199   172.20.10.199    [newnew] Mysql2                                                                                                                                      
+10   172.20.10.201   172.20.10.201    [newnew] 运维管理1                                                                                                                                   
+11   172.20.10.202   172.20.10.202    [newnew] 运维管理2                                                                                                                                   
+12   172.20.10.51    172.20.10.51     [newnew] nginx1                                                                                                                                      
+13   172.20.10.52    172.20.10.52     [newnew] nginx2                                                                                                                                      
+14   172.20.10.61    172.20.10.61     [newnew] 交易系统1                                                                                                                                   
+15   172.20.10.62    172.20.10.62     [newnew] 交易系统2                                                                                                                                   
+16   172.20.10.71    172.20.10.71     [newnew] 管理后台1                                                                                                                                   
+17   172.20.10.73    172.20.10.73     [newnew] 管理后台2                                                                                                                                   
+18   172.20.10.74    172.20.10.74     [newnew] 定时任务1                                                                                                                                   
+19   172.20.10.76    172.20.10.76     [newnew] 定时任务2                                                                                                                                   
+20   172.20.10.77    172.20.10.77     [newnew] 公共组件1                                                                                                                                   
+21   172.20.10.79    172.20.10.79     [newnew] 公共组件2                                                                                                                                   
+22   172.20.10.81    172.20.10.81     [newnew] mq-haproxy1                                                                                                                                 
+23   172.20.10.83    172.20.10.83     [newnew] mq-haproxy2                                                                                                                                 
+24   172.20.10.84    172.20.10.84     [newnew] rabbitMQ1                                                                                                                                   
+25   172.20.10.85    172.20.10.85     [newnew] rabbitMQ2                                                                                                                                   
+26   172.20.10.86    172.20.10.86     [newnew] rabbitMQ3                                                                                                                                   
+27   172.20.10.91    172.20.10.91     [newnew] fastdfs-traker1                                                                                                                             
+28   172.20.10.93    172.20.10.93     [newnew] fastdfs-tracker2                                                                                                                            
+29   172.20.10.94    172.20.10.94     [newnew] fastdfs_storage1                                                                                                                            
+30   172.20.10.95    172.20.10.95     [newnew] fastdfs_storage2                                                                                                                            
+31   172.20.10.96    172.20.10.96     [newnew] fastdfs_storage3                                                                                                                            
+32   172.20.10.97    172.20.10.97     [newnew] Zookeeper1                                                                                                                                  
+33   172.20.10.98    172.20.10.98     [newnew] Zookeeper2                                                                                                                                  
+34   172.20.10.99    172.20.10.99     [newnew] Zookeeper3                                                                                                                                  
+
+总共: 34 匹配: 34
+
+Opt> 9
+
+Connecting to newnew@172.20.10.199 0.1
+[newnew@VM_10_199_centos ~]$ su - root
+Password: 
+Last login: Thu Jun  7 09:40:25 CST 2018 from 172.20.10.201 on pts/0
+[root@VM_10_199_centos ~]# cd /opt/
+[root@VM_10_199_centos opt]# mkdir soft/build -p
+[root@VM_10_199_centos opt]# ls
+rh  soft
+[root@VM_10_199_centos opt]# cd soft/
+[root@VM_10_199_centos soft]# ls
+build
+[root@VM_10_199_centos soft]# wget http://172.20.10.201:81/app/mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz
+--2018-06-07 14:23:37--  http://172.20.10.201:81/app/mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz
+Connecting to 172.20.10.201:81... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 641798603 (612M) [application/octet-stream]
+Saving to: ‘mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz’
+
+100%[=================================================================================================================================================>] 641,798,603  228MB/s   in 2.7s   
+
+2018-06-07 14:23:40 (228 MB/s) - ‘mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz’ saved [641798603/641798603]
+
+[root@VM_10_199_centos soft]# wget http://172.20.10.201:81/app/mysql_install_script_5.7.21.tar.gz
+--2018-06-07 14:23:53--  http://172.20.10.201:81/app/mysql_install_script_5.7.21.tar.gz
+Connecting to 172.20.10.201:81... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 30720 (30K) [application/octet-stream]
+Saving to: ‘mysql_install_script_5.7.21.tar.gz’
+
+100%[=================================================================================================================================================>] 30,720      --.-K/s   in 0s      
+
+2018-06-07 14:23:53 (224 MB/s) - ‘mysql_install_script_5.7.21.tar.gz’ saved [30720/30720]
+
+[root@VM_10_199_centos soft]# ls
+build  mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz  mysql_install_script_5.7.21.tar.gz
+[root@VM_10_199_centos soft]# tar xf mysql_install_script_5.7.21.tar.gz 
+[root@VM_10_199_centos soft]# ll mysql
+total 24
+-rwxr-xr-x 1 root root 2105 Jun  7 11:46 dbinit_newnew.sql
+-rw-r--r-- 1 root root 4922 Jun  7 11:33 mysql-5.7.21.cnf
+-rwxr-xr-x 1 root root 1552 Jun  7 11:07 mysql-5.7.21.init
+-rwxr-xr-x 1 root root 7591 Jun  7 14:09 mysql_install.sh
+[root@VM_10_199_centos mysql]# sh mysql_install.sh 
+mysql_install.sh install              安装 mysql
+mysql_install.sh update               更新 mysql
+mysql_install.sh reinstall            重装 mysql
+mysql_install.sh remove               删除 mysql
+mysql_install.sh backup               备份 mysql
+mysql_install.sh init                 初始化 mysql
+mysql_install.sh start                启动 mysql
+mysql_install.sh stop                 停止 mysql
+mysql_install.sh restart              重启 mysql
+mysql_install.sh status               查询 mysql 状态
+mysql_install.sh user                 新建 mysql 运行用户
+[root@VM_10_199_centos mysql]# sh mysql_install.sh install
+Loaded plugins: fastestmirror, langpacks
+epel                                                                                                                                                                | 3.2 kB  00:00:00     
+extras                                                                                                                                                              | 3.4 kB  00:00:00     
+os                                                                                                                                                                  | 3.6 kB  00:00:00     
+updates                                                                                                                                                             | 3.4 kB  00:00:00     
+(1/7): epel/7/x86_64/group_gz                                                                                                                                       |  88 kB  00:00:00     
+(2/7): extras/7/x86_64/primary_db                                                                                                                                   | 147 kB  00:00:00     
+(3/7): os/7/x86_64/group_gz                                                                                                                                         | 166 kB  00:00:00     
+(4/7): epel/7/x86_64/updateinfo                                                                                                                                     | 933 kB  00:00:00     
+(5/7): epel/7/x86_64/primary                                                                                                                                        | 3.5 MB  00:00:00     
+(6/7): updates/7/x86_64/primary_db                                                                                                                                  | 2.0 MB  00:00:00     
+(7/7): os/7/x86_64/primary_db                                                                                                                                       | 5.9 MB  00:00:00     
+Determining fastest mirrors
+epel                                                                                                                                                                           12586/12586
+Resolving Dependencies
+--> Running transaction check
+---> Package numactl.x86_64 0:2.0.9-7.el7 will be installed
+--> Processing Dependency: libnuma.so.1(libnuma_1.4)(64bit) for package: numactl-2.0.9-7.el7.x86_64
+--> Processing Dependency: libnuma.so.1(libnuma_1.3)(64bit) for package: numactl-2.0.9-7.el7.x86_64
+--> Processing Dependency: libnuma.so.1(libnuma_1.2)(64bit) for package: numactl-2.0.9-7.el7.x86_64
+--> Processing Dependency: libnuma.so.1(libnuma_1.1)(64bit) for package: numactl-2.0.9-7.el7.x86_64
+--> Processing Dependency: libnuma.so.1()(64bit) for package: numactl-2.0.9-7.el7.x86_64
+--> Running transaction check
+---> Package numactl-libs.x86_64 0:2.0.9-7.el7 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+===========================================================================================================================================================================================
+ Package                                          Arch                                       Version                                          Repository                              Size
+===========================================================================================================================================================================================
+Installing:
+ numactl                                          x86_64                                     2.0.9-7.el7                                      os                                      66 k
+Installing for dependencies:
+ numactl-libs                                     x86_64                                     2.0.9-7.el7                                      os                                      29 k
+
+Transaction Summary
+===========================================================================================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total download size: 95 k
+Installed size: 191 k
+Downloading packages:
+(1/2): numactl-libs-2.0.9-7.el7.x86_64.rpm                                                                                                                          |  29 kB  00:00:00     
+(2/2): numactl-2.0.9-7.el7.x86_64.rpm                                                                                                                               |  66 kB  00:00:00     
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                      1.0 MB/s |  95 kB  00:00:00     
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : numactl-libs-2.0.9-7.el7.x86_64                                                                                                                                         1/2 
+  Installing : numactl-2.0.9-7.el7.x86_64                                                                                                                                              2/2 
+  Verifying  : numactl-libs-2.0.9-7.el7.x86_64                                                                                                                                         1/2 
+  Verifying  : numactl-2.0.9-7.el7.x86_64                                                                                                                                              2/2 
+
+Installed:
+  numactl.x86_64 0:2.0.9-7.el7                                                                                                                                                             
+
+Dependency Installed:
+  numactl-libs.x86_64 0:2.0.9-7.el7                                                                                                                                                        
+
+Complete!
+新建 mysql 运行组：mysql
+新建 mysql 运行用户：mysql
+mysql 未安装
+mysql 安装成功
+‘./mysql-5.7.21.init’ -> ‘/etc/init.d/mysql-5.7.21.init’
+‘./mysql-5.7.21.cnf’ -> ‘/opt/mysql/conf/my.cnf’
+‘/opt/mysql/conf/my.cnf’ -> ‘/etc/my.cnf’ (backup: ‘/etc/my.cnf.~1~’)
+[root@VM_10_199_centos mysql]# sh mysql_install.sh init
+新建 mysql 数据存储目录：/opt/data/mysql
+/opt/mysql/bin/mysqld --initialize  --basedir=/opt/mysql --datadir=/opt/data/mysql --user=mysql
+成功 mysql 授权表
+mysql 已初始化
+[root@VM_10_199_centos mysql]# echo $PATH
+/opt/mysql/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin
+[root@VM_10_199_centos ~]# mysql -uroot
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> update mysql.user set authentication_string=PASSWORD('ZjHl#@!123.') where User='root';
+Query OK, 1 row affected, 1 warning (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('ZjHl#@!123.');
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> flush privileges; 
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>exit
+[root@VM_10_199_centos ~]# /etc/init.d/mysql-5.7.21.init stop
+Stoping MySQL...
+mysqladmin: [Warning] Using a password on the command line interface can be insecure.
+2018-06-07T06:36:08.591112Z mysqld_safe mysqld from pid file /opt/mysql/mysql.pid ended
+
+[1]+  Done                    mysqld_safe --skip-grant-tables
+[root@VM_10_199_centos ~]# /etc/init.d/mysql-5.7.21.init start
+Starting MySQL...
+/bin/sh  /opt/mysql/bin/mysqld_safe  --defaults-file=/opt/mysql/conf/my.cnf --datadir=/opt/data/mysql &
+2018-06-07T06:36:51.380719Z mysqld_safe Logging to '/opt/data/logs/error-log/error.log'.
+2018-06-07T06:36:51.401864Z mysqld_safe Starting mysqld daemon with databases from /opt/data/mysql
+MySQL 3306 启动成功
+[root@VM_10_199_centos ~]# netstat -lnutp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1016/sshd           
+tcp6       0      0 :::3306                 :::*                    LISTEN      30146/mysqld        
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           951/dhclient        
+udp        0      0 172.20.10.199:123       0.0.0.0:*                           638/ntpd            
+udp        0      0 127.0.0.1:123           0.0.0.0:*                           638/ntpd            
+udp        0      0 0.0.0.0:123             0.0.0.0:*                           638/ntpd            
+udp        0      0 0.0.0.0:9513            0.0.0.0:*                           951/dhclient        
+udp6       0      0 :::123                  :::*                                638/ntpd            
+udp6       0      0 :::34559  
+[root@VM_10_199_centos ~]# mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.21-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+mysql> select version(); 
++------------+
+| version()  |
++------------+
+| 5.7.21-log |
++------------+
+1 row in set (0.01 sec)
+
+mysql> source /opt/script/mysql/dbinit_newnew.sql;
+Database changed
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show master status;
++------------+----------+--------------+------------------+-------------------------------------------+
+| File       | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                         |
++------------+----------+--------------+------------------+-------------------------------------------+
+| bin.000003 |     4822 |              |                  | d383fd39-6a1b-11e8-9588-5254001e4e4c:1-16 |
++------------+----------+--------------+------------------+-------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> CHANGE MASTER TO MASTER_HOST='172.20.10.198',MASTER_PORT=3306,MASTER_USER='repl',MASTER_PASSWORD='repl@123',MASTER_AUTO_POSITION = 1;
+Query OK, 0 rows affected, 2 warnings (0.12 sec)
+
+mysql> start slave;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show slave status\G;
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 172.20.10.198
+                  Master_User: repl
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: bin.000004
+          Read_Master_Log_Pos: 11410
+               Relay_Log_File: relay.000003
+                Relay_Log_Pos: 8164
+        Relay_Master_Log_File: bin.000004
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: mysql
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 11410
+              Relay_Log_Space: 9379
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 20010198
+                  Master_UUID: 0b1cdfc5-6a18-11e8-8b74-5254007cf6a4
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 0b1cdfc5-6a18-11e8-8b74-5254007cf6a4:1-20
+            Executed_Gtid_Set: 0b1cdfc5-6a18-11e8-8b74-5254007cf6a4:1-20,
+d383fd39-6a1b-11e8-9588-5254001e4e4c:1-18
+                Auto_Position: 1
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+1 row in set (0.00 sec)
+
+ERROR: 
+No query specified
+
+
+#双主测试-------------------------------------------------------------------------------------------------
+[root@VM_10_198_centos ~]# mysql -u root -p
+mysql> create database test；
+mysql> CREATE TABLE IF NOT EXISTS `newnew_tbl`(
+    ->    `newnew_id` INT UNSIGNED AUTO_INCREMENT,
+    ->    `newnew_title` VARCHAR(100) NOT NULL,
+    ->    `submission_date` DATE,
+    ->    PRIMARY KEY ( `newnew_id` )
+    -> )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> show tables;
++----------------+
+| Tables_in_test |
++----------------+
+| newnew_tbl     |
++----------------+
+1 row in set (0.00 sec)
+
+#------------------------------------------------------
+[root@VM_10_199_centos ~]# mysql -u root -p
+mysql> use test;
+Database changed
+mysql> show tables;
++----------------+
+| Tables_in_test |
++----------------+
+| newnew_tbl     |
++----------------+
+1 row in set (0.00 sec)
+
+mysql>

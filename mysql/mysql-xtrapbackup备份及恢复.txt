@@ -1,0 +1,135 @@
+[root@VM_10_198_centos backup]# innobackupex --defaults-file=/opt/mysql/conf/my.cnf  --no-timestamp --no-version-check --parallel=8 --safe-slave-backup --slave-info --user backup --password backup@123 --stream=tar /data/backup/ 
+180614 18:03:48 innobackupex: Starting the backup operation
+
+IMPORTANT: Please check that the backup run completes successfully.
+           At the end of a successful backup run innobackupex
+           prints "completed OK!".
+
+180614 18:03:48 Connecting to MySQL server host: localhost, user: backup, password: set, port: 3306, socket: /tmp/mysql.sock
+Error: Unsupported server version: '5.7.21-log'. Please report a bug at https://bugs.launchpad.net/percona-xtrabackup
+[root@VM_10_198_centos backup]# ll /opt/soft/percona-xtrabackup-2.3.4-1.el6.x86_64.rpm 
+-rw-r--r-- 1 root root 5701116 Dec 10  2017 /opt/soft/percona-xtrabackup-2.3.4-1.el6.x86_64.rpm
+#分析原因： 由于之前服务器安装的xtrabackup比较老的版本，不支持mysql 5.7的热备，需要升级下版本或新服务器部署2.4.1版本。
+[root@VM_10_198_centos soft]# wget https://www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.11/binary/redhat/7/x86_64/percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm
+--2018-06-14 18:07:12--  https://www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.11/binary/redhat/7/x86_64/percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm
+Resolving www.percona.com (www.percona.com)... 74.121.199.234
+Connecting to www.percona.com (www.percona.com)|74.121.199.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7827348 (7.5M) [application/x-redhat-package-manager]
+Saving to: ‘percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm’
+
+100%[====================================================================================================================================>] 7,827,348   2.26MB/s   in 3.3s   
+
+2018-06-14 18:07:17 (2.26 MB/s) - ‘percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm’ saved [7827348/7827348]
+[root@VM_10_198_centos soft]# rpm -qa | grep percona
+percona-xtrabackup-2.3.4-1.el6.x86_64
+
+
+[root@VM_10_198_centos soft]# rpm -e percona-xtrabackup
+[root@VM_10_198_centos soft]# rpm -qa | grep percona
+[root@VM_10_198_centos soft]# rm -rf percona-xtrabackup-2.3.4-1.el6.x86_64.rpm 
+[root@VM_10_198_centos soft]# ls
+build                    mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz  percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm
+keepalived-2.0.0.tar.gz  mysql_install_script_5.7.21.tar.gz          qcloudapi-sdk-python-master.zip
+
+[root@VM_10_198_centos soft]# yum -y localinstall percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm 
+Loaded plugins: fastestmirror, langpacks
+Examining percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm: percona-xtrabackup-24-2.4.11-1.el7.x86_64
+Marking percona-xtrabackup-24-2.4.11-1.el7.x86_64.rpm to be installed
+Resolving Dependencies
+--> Running transaction check
+---> Package percona-xtrabackup-24.x86_64 0:2.4.11-1.el7 will be installed
+--> Processing Dependency: perl(Digest::MD5) for package: percona-xtrabackup-24-2.4.11-1.el7.x86_64
+Loading mirror speeds from cached hostfile
+--> Running transaction check
+---> Package perl-Digest-MD5.x86_64 0:2.52-3.el7 will be installed
+--> Processing Dependency: perl(Digest::base) >= 1.00 for package: perl-Digest-MD5-2.52-3.el7.x86_64
+--> Running transaction check
+---> Package perl-Digest.noarch 0:1.17-245.el7 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+==============================================================================================================================================================================
+ Package                                   Arch                       Version                            Repository                                                      Size
+==============================================================================================================================================================================
+Installing:
+ percona-xtrabackup-24                     x86_64                     2.4.11-1.el7                       /percona-xtrabackup-24-2.4.11-1.el7.x86_64                      31 M
+Installing for dependencies:
+ perl-Digest                               noarch                     1.17-245.el7                       os                                                              23 k
+ perl-Digest-MD5                           x86_64                     2.52-3.el7                         os                                                              30 k
+
+Transaction Summary
+==============================================================================================================================================================================
+Install  1 Package (+2 Dependent packages)
+
+Total size: 31 M
+Total download size: 53 k
+Installed size: 31 M
+Downloading packages:
+(1/2): perl-Digest-1.17-245.el7.noarch.rpm                                                                                                             |  23 kB  00:00:00     
+(2/2): perl-Digest-MD5-2.52-3.el7.x86_64.rpm                                                                                                           |  30 kB  00:00:00     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                         473 kB/s |  53 kB  00:00:00     
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+Warning: RPMDB altered outside of yum.
+  Installing : perl-Digest-1.17-245.el7.noarch                                                                                                                            1/3 
+  Installing : perl-Digest-MD5-2.52-3.el7.x86_64                                                                                                                          2/3 
+  Installing : percona-xtrabackup-24-2.4.11-1.el7.x86_64                                                                                                                  3/3 
+  Verifying  : percona-xtrabackup-24-2.4.11-1.el7.x86_64                                                                                                                  1/3 
+  Verifying  : perl-Digest-MD5-2.52-3.el7.x86_64                                                                                                                          2/3 
+  Verifying  : perl-Digest-1.17-245.el7.noarch                                                                                                                            3/3 
+
+Installed:
+  percona-xtrabackup-24.x86_64 0:2.4.11-1.el7                                                                                                                                 
+
+Dependency Installed:
+  perl-Digest.noarch 0:1.17-245.el7                                                    perl-Digest-MD5.x86_64 0:2.52-3.el7                                                   
+
+Complete!
+
+[root@VM_10_198_centos ~]# /opt/script/mysql/xtrabackup_mysql.sh 
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysqladmin: [Warning] Using a password on the command line interface can be insecure.
+备份成功
+[root@VM_10_198_centos ~]# /opt/script/mysql/xtrabackup_mysql.sh 
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysqladmin: [Warning] Using a password on the command line interface can be insecure.
+备份成功
+[root@VM_10_198_centos ~]# cd /data/backup/
+[root@VM_10_198_centos backup]# ls
+2018-06-14  logs
+[root@VM_10_198_centos backup]# cd 2018-06-14/
+[root@VM_10_198_centos 2018-06-14]# lss
+mysql_backup.tgz
+#----------------------------------------------------------------------------------------------------------
+#xtarbackup数据备份和数据完全恢复
+[root@VM_10_198_centos 2018-06-14]# mkdir /data/2018-06-14
+[root@VM_10_198_centos 2018-06-14]# tar xf mysql_backup.tgz -C /data/2018-06-14
+[root@VM_10_198_centos 2018-06-14]# ll /data/2018-06-14/
+total 12344
+-rw-rw---- 1 root root      495 Jun 14 18:10 backup-my.cnf
+-rw-rw---- 1 root root      423 Jun 14 10:59 ib_buffer_pool
+-rw-rw---- 1 root root 12582912 Jun 14 18:10 ibdata1
+drwxr-xr-x 2 root root     4096 Jun 14 18:14 mysql
+drwxr-xr-x 2 root root     4096 Jun 14 18:14 performance_schema
+drwxr-xr-x 2 root root     4096 Jun 14 18:14 test
+-rw-rw---- 1 root root      100 Jun 14 18:10 xtrabackup_binlog_info
+-rw-rw---- 1 root root      113 Jun 14 18:10 xtrabackup_checkpoints
+-rw-rw---- 1 root root      731 Jun 14 18:10 xtrabackup_info
+-rw-rw---- 1 root root     3072 Jun 14 18:10 xtrabackup_logfile
+-rw-rw---- 1 root root      152 Jun 14 18:10 xtrabackup_slave_info
+
+[root@VM_10_198_centos 2018-06-14]# cd /data/2018-06-14/
+
+[root@VM_10_198_centos 2018-06-14]# innobackupex  --defaults-file=/opt/mysql/conf/my.cnf --socket=/tmp/mysql.sock --apply-log  --no-lock /data/2018-06-14/
+[root@VM_10_198_centos 2018-06-14]# /opt/script/mysql/mysql_install.sh stop           #停止数据库
+[root@VM_10_198_centos 2018-06-14]# /opt/data/mysql                                   #删除数据库原有数据
+[root@VM_10_198_centos 2018-06-14]# innobackupex  --defaults-file=/opt/mysql/conf/my.cn --socket=/tmp/mysql.sock --copy-back  --no-lock  /data/2018-06-14/
+[root@VM_10_198_centos 2018-06-14]# chown -R mysql.mysql /opt/data/mysql
+[root@VM_10_198_centos 2018-06-14]# /opt/script/mysql/mysql_install.sh start 
